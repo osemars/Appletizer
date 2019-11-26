@@ -1,0 +1,25 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="RatingBar" parent="Theme.AppCompat">
+    <item name="colorControlNormal" type="color">#b4b4b4</item>
+    <item name="colorControlActivated" type="color">#3cb371</item>
+    </style>
+
+    <style name="RatingBar2">RatingBar</style>
+    <item name="colorControlNormal2" type="color">#ffff00</item>
+    <item name="colorControlActivated2" type="color">#A9A9A9</item>
+
+    <style name="customRatingBar"
+        parent="android:style/Widget.Material.RatingBar.Small">
+        ... // Additional customizations
+    </style>
+
+</resources>
