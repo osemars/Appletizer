@@ -1,18 +1,34 @@
 package com.example.linkweigh;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RatingBar;
+import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -31,11 +47,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import static com.example.linkweigh.TeacherUpload.uploaderID;
+import static com.example.linkweigh.TeacherUpload.uploaderName;
+
 
 public class MainActivity extends AppCompatActivity {
 
     public ProgressDialog mProgressDialog;
-    String urlString;
+    private static final String TAG = "Fire_log";
     int count_video;
     int count_jpg;
     int count_cap;
@@ -58,15 +77,34 @@ public class MainActivity extends AppCompatActivity {
     int prediction;
     int final_prediction;
     Button upload;
+    public static String urlString;
     EditText editText;
     List<Integer> input;
-
+    public static String clipwordsearch;
+    public static Switch webwordswitched;
+    public static String url;
+    public static String question1;
+    public static String option1A;
+    public static String option1B;
+    public static String option1C;
+    public static String option1D;
+    public static String question1Answer;
+    public static String uploaderName;
+    //    public static boolean noQuestion = false;
+    public static FirebaseFirestore db;
+    public static DocumentSnapshot docc;
+    Button watch;
+    RatingBar ratingBar;
+    TextView info;
+    FirebaseUser user;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         upload = findViewById(R.id.upload);
+        watch = findViewById(R.id.go);
     }
 
 
@@ -74,7 +112,8 @@ public class MainActivity extends AppCompatActivity {
 
         showProgressDialog();
         editText = findViewById(R.id.url_edittext);
-        final RatingBar ratingBar = findViewById(R.id.ratingbar);
+        ratingBar = findViewById(R.id.ratingbar);
+        info = findViewById(R.id.info);
 
         urlString = editText.getText().toString();
         if (urlString.equals("")) {
@@ -93,11 +132,11 @@ public class MainActivity extends AppCompatActivity {
                         try {
                             doc = Jsoup.connect(urlString).get();
                         } catch (IOException e) {
-                           runOnUiThread(new Runnable(){
-                                  public void run() {
-                                      Toast.makeText(getApplicationContext(),"Your internet connection seems to be slow, please try again!",    Toast.LENGTH_LONG).show();
-                                  }
-                                });
+                            runOnUiThread(new Runnable() {
+                                public void run() {
+                                    Toast.makeText(getApplicationContext(), "Your internet connection seems to be slow, please try again!", Toast.LENGTH_LONG).show();
+                                }
+                            });
                             e.printStackTrace();
                             hideProgressDialog();
                             return;
@@ -302,7 +341,7 @@ public class MainActivity extends AppCompatActivity {
                                         toast.show();
 
                                     }
-
+                                    info.setVisibility(View.VISIBLE);
                                     System.clearProperty(urlString);
                                 }
                             });
@@ -339,10 +378,19 @@ public class MainActivity extends AppCompatActivity {
     public void showProgressDialog() {
         if (mProgressDialog == null) {
             mProgressDialog = new ProgressDialog(this);
-            mProgressDialog.setMessage("Link-AI is predicting...");
+            mProgressDialog.setMessage("A.I is weighing your article...");
             mProgressDialog.setIndeterminate(true);
         }
 
+        mProgressDialog.show();
+    }
+
+    public void showProgressDialog_eat() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setMessage("serving your appetizer");
+            mProgressDialog.setIndeterminate(true);
+        }
         mProgressDialog.show();
     }
 
@@ -352,4 +400,110 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void textview_onclick(View view) {
+        editText = findViewById(R.id.url_edittext);
+        urlString = editText.getText().toString();
+        if (urlString.equals("")) {
+            Toast.makeText(MainActivity.this, "Kindly paste a full link for prediction", Toast.LENGTH_LONG).show();
+//            ratingBar.setRating(0);
+//            hideProgressDialog();
+            return;
+        }
+
+        Intent intent = new Intent(MainActivity.this, TeacherUpload.class);
+        //take the teacher to the success page!
+        intent.putExtra("url", urlString);
+        startActivity(intent);
+
+    }
+
+    public void Scholar(View view) {
+//        Intent intent = new Intent(MainActivity.this, StudentWatch.class);
+//        //take the teacher to the success page!
+//        startActivity(intent);
+        upload.setVisibility(View.GONE);
+        watch.setVisibility(View.VISIBLE);
+//        ratingBar.setVisibility(View.GONE);
+    }
+
+    public void Educator(View view) {
+        upload.setVisibility(View.VISIBLE);
+        watch.setVisibility(View.GONE);
+    }
+
+    public void watch(View view) {
+
+        showProgressDialog_eat();
+        editText = findViewById(R.id.url_edittext);
+//        final RatingBar ratingBar = findViewById(R.id.ratingbar);
+//        textView.setVisibility(View.VISIBLE);
+
+        clipwordsearch = editText.getText().toString();
+        if (clipwordsearch.equals("")) {
+            Toast.makeText(MainActivity.this, "Kindly paste a keyword", Toast.LENGTH_LONG).show();
+//            ratingBar.setRating(0);
+            hideProgressDialog();
+            return;
+        }
+//        EditText clipwordIni = findViewById(R.id.editText);
+//        clipwordsearch = clipwordIni.getText().toString();
+//        String character_zero = String.valueOf(clipwordsearch.charAt(0));
+
+
+//        if (webwordswitched.isChecked()) {
+        db = FirebaseFirestore.getInstance();
+        CollectionReference collectionReference = db.collection("webword");
+        Query query = collectionReference.whereEqualTo("webwords", clipwordsearch);
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (DocumentSnapshot document : task.getResult()) {//stops here if webword not found
+                        url = document.getString("url");//it extracts the url as it approaches the next line
+                        question1 = document.getString("question");
+                        option1A = document.getString("optionA");
+                        option1B = document.getString("optionB");
+                        option1C = document.getString("optionC");
+                        option1D = document.getString("optionD");
+                        question1Answer = document.getString("answer");
+                        uploaderID = document.getString("uploaderID");
+                        uploaderName = document.getString("uploaderName");
+                        docc = document;
+
+                        Log.d(TAG, url);
+                        Log.d(TAG, question1);
+                        Log.d(TAG, question1Answer);
+                        Log.d(TAG, option1A);
+                        Log.d(TAG, option1B);
+                        Log.d(TAG, option1C);
+                        Log.d(TAG, option1D);
+                        Log.d(TAG, uploaderID);
+                        Log.d(TAG, uploaderName);
+
+
+                    }
+                }//if task is successful it ignores this block
+                else {
+                    hideProgressDialog();
+                    Toast.makeText(MainActivity.this, "Sorry, something went wrong", Toast.LENGTH_LONG).show();
+                    Log.d(TAG, "get failed with ", task.getException());
+                    return;
+                }
+                //escaped an error if you leave the editbox empty and search but ive used the null string
+                //for a new video
+                if (url == null) {
+                    hideProgressDialog();
+                    Toast.makeText(MainActivity.this, "Sorry, the Webword you entered doesn't exist", Toast.LENGTH_LONG).show();
+                    Log.d(TAG, "get failed with clipword doesnt exist ", task.getException());
+                    return;
+                }
+                Intent intent = new Intent(MainActivity.this, QuestionActivity.class);
+                startActivity(intent);
+//                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+//                    hideProgressDialog();
+//                    startActivity(browserIntent);
+            }
+        });
+//        }
+    }
 }

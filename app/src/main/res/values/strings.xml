@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">Link-AI</string>
+    <string name="app_name">Appletizer</string>
+    <string name="convert_link_into_an_easy_assignment">Convert this link into an Appletizer for your class? </string>
 </resources>

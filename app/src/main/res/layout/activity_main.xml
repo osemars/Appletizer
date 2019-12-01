@@ -25,11 +25,11 @@
             android:layout_height="45sp"
             android:layout_centerInParent="true"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="2dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:background="@drawable/be_edittext"
-            android:hint="Paste the full link you wish to predict..."
+            android:hint="Paste link or keyword"
             android:textAlignment="center"
             android:textColor="#191970"
             android:textSize="17sp"
@@ -37,20 +37,36 @@
             >
         </EditText>
 
+        <TextView
+            android:id="@+id/info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/url_edittext"
+            android:layout_centerHorizontal="true"
+            android:clickable="true"
+            android:focusable="true"
+            android:onClick="textview_onclick"
+            android:padding="3dp"
+            android:text="@string/convert_link_into_an_easy_assignment"
+            android:textAlignment="center"
+            android:textColor="#F78181"
+            android:visibility="invisible"></TextView>
+
         <RatingBar
             android:id="@+id/ratingbar"
             android:layout_width="wrap_content"
             android:layout_height="45dp"
             android:layout_below="@id/url_edittext"
             android:layout_centerHorizontal="true"
-            android:layout_margin="8dp"
+            android:layout_marginTop="32dp"
             android:numStars="5"
             android:saveEnabled="true"
             android:isIndicator="true"
-            android:theme="@style/RatingBar"/>
+            android:theme="@style/RatingBar"
+            android:visibility="visible" />
 
 
-<!--        <RatingBar-->
+        <!--        <RatingBar-->
 <!--            android:id="@+id/ratingbar2"-->
 <!--            android:layout_width="wrap_content"-->
 <!--            android:layout_height="wrap_content"-->
@@ -70,52 +86,79 @@
 <!--            />-->
 
 
-        <Button
-            android:id="@+id/upload"
-            android:layout_width="110sp"
-            android:layout_height="50sp"
-            android:layout_below="@+id/ratingbar"
-            android:background="@drawable/bg_button"
-            android:layout_centerHorizontal="true"
-            android:layout_margin="32dp"
-            android:onClick="uploader"
-            android:backgroundTint="#f0f0f0"
-            android:elevation="5dp"
-            android:text="predict"
-            android:textColor="#3c3c3c"
-            android:textSize="15sp"
-            android:visibility="visible"
-            />
-
-<!--        <Button-->
-<!--            android:id="@+id/upload_user"-->
-<!--            android:layout_width="110sp"-->
-<!--            android:layout_height="50sp"-->
-<!--            android:layout_below="@+id/ratingbar2"-->
-<!--            android:background="@drawable/bg_button"-->
-<!--            android:layout_centerHorizontal="true"-->
-<!--            android:layout_margin="32dp"-->
-<!--            android:onClick="userUploader"-->
-<!--            android:backgroundTint="#e60000"-->
-<!--            android:elevation="5dp"-->
-<!--            android:text="submit"-->
-<!--            android:textColor="#FFFFFF"-->
-<!--            android:textSize="15sp"-->
-<!--            android:visibility="gone"/>-->
+        <!--        <TextView-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:id="@+id/scholar"-->
+        <!--            android:padding="25dp"-->
+        <!--            android:text="Scholar"-->
+        <!--            android:textAlignment="center"-->
+        <!--            android:clickable="true"-->
+        <!--            android:focusable="true"-->
+        <!--            android:onClick="Scholar"-->
+        <!--            android:layout_below="@id/url_edittext"-->
+        <!--            android:layout_toLeftOf="@id/scholar"-->
+        <!--            android:paddingLeft="10dp"-->
+        <!--            android:layout_toStartOf="@id/scholar"-->
+        <!--            android:textColor="@color/colorPrimary"-->
+        <!--            android:paddingStart="120dp">-->
+        <!--        </TextView>-->
 
 <!--        <TextView-->
 <!--            android:layout_width="wrap_content"-->
 <!--            android:layout_height="wrap_content"-->
-<!--            android:id="@+id/info"-->
-<!--            android:layout_centerHorizontal="true"-->
+        <!--            android:id="@+id/educator"-->
 <!--            android:padding="25dp"-->
-<!--            android:text="@string/textview_text"-->
+        <!--            android:text="Educator"-->
 <!--            android:textAlignment="center"-->
 <!--            android:clickable="true"-->
 <!--            android:focusable="true"-->
-<!--            android:onClick="textview_onclick"-->
-<!--            android:layout_alignParentBottom="true">-->
+        <!--            android:textColor="@color/colorPrimary"-->
+        <!--            android:onClick="Educator"-->
+        <!--            android:layout_toRightOf="@id/scholar"-->
+        <!--            android:layout_below="@id/url_edittext"-->
+        <!--            android:layout_toEndOf="@id/scholar">-->
 <!--        </TextView>-->
+
+        <LinearLayout
+            android:id="@+id/LinearLayout02"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ratingbar"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp">
+
+            <Button
+                android:id="@+id/upload"
+                android:layout_width="110sp"
+                android:layout_height="50sp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_button"
+                android:backgroundTint="#f0f0f0"
+                android:elevation="5dp"
+                android:onClick="uploader"
+                android:text="predict"
+                android:textColor="#3c3c3c"
+                android:textSize="15sp"
+                android:visibility="visible" />
+
+            <Button
+                android:id="@+id/go"
+                android:layout_width="110sp"
+                android:layout_height="50sp"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_button"
+                android:backgroundTint="#f0f0f0"
+                android:elevation="5dp"
+                android:onClick="watch"
+                android:text="Consume"
+                android:textColor="#3c3c3c"
+                android:textSize="15sp"
+                android:visibility="visible" />
+
+        </LinearLayout>
 
 
     </RelativeLayout>
